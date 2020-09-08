@@ -1,3 +1,4 @@
+## Artem L  https://youtu.be/NwsLkmf6r0c
 words = {
     'apple': 'is a fruit',
     'book': 'has words in it'
