@@ -1,3 +1,8 @@
+from linked_list import LinkedList
+import sys
+sys.path.append('../hashtable/linked_list')
+
+
 class HashTableEntry:
     """
     Linked List hash table key/value pair
@@ -21,11 +26,13 @@ class HashTable:
     Implement this.
     """
 
-    def __init__(self, capacity):
+    def __init__(self, capacity=MIN_CAPACITY):
+        self.storage = [LinkedList()] * MIN_CAPACITY
         # Your code here
         self.capacity = capacity
         # creates a list of capcity with None values
         self.data = [None] * capacity
+        self.count = 0
 
     def get_num_slots(self):
         """
@@ -47,6 +54,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return self.count / self.capacity
 
     def fnv1(self, key):
         """
@@ -87,7 +95,15 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
-        self.data[index] = value
+        current = self.storage[index].head
+        while current:
+            if current.key == key:
+                current.value = value
+            current = current.next
+
+        entry = HashTableEntry(key, value)
+        self.storage[index].insert_at_head(entry)
+        self.count += 1
 
     def delete(self, key):
         """
@@ -98,11 +114,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        index = self.hash_index(key)
-        if self.data[index] is None:
-            print("Key not found")
-        else:
-            self.data[index] = None
+        self.put(key, None)
+        self.count -= 1
 
     def get(self, key):
         """
@@ -114,8 +127,12 @@ class HashTable:
         """
         # Your code here
         index = self.hash_index(key)
-        value = self.data[index]
-        return value
+        current = self.storage[index].head
+        while current:
+            if current.key == key:
+                return current.value
+            current = current.next
+        return None
 
     def resize(self, new_capacity):
         """
@@ -125,6 +142,15 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        if self.get_load_factor() > 0.7:
+            old_storage = self.storage
+            self.storage = [LinkedList()] * new_capacity
+            for item in old_storage:
+                current = item.head
+                while current:
+                    self.put(current.key, current.value)
+                    current = current.next
+            self.capacity = new_capacity
 
 
 if __name__ == "__main__":
