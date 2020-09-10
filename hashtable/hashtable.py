@@ -85,6 +85,7 @@ class HashTable:
         # return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
+    # Time comp. O(1)
     def put(self, key, value):
         """
         Store the value with the given key.
@@ -92,6 +93,14 @@ class HashTable:
         Hash collisions should be handled with Linked List Chaining.
 
         Implement this.
+
+        check if key is already present
+        if so, overwrite the value
+        if not, add a new node
+
+        Which is faster, add tohead or add to tail?
+        Doesn't matter!
+        Either way, you have to check all the nodes, and then you have both head and tail
         """
         # Your code here
         index = self.hash_index(key)
@@ -134,12 +143,21 @@ class HashTable:
             current = current.next
         return None
 
+    # Time comp. O(n)
     def resize(self, new_capacity):
         """
         Changes the capacity of the hash table and
         rehashes all key/value pairs.
 
         Implement this.
+
+        Linear in time
+        Put is O(1)?
+
+        amortize the cost of resizing over all the puts
+
+        Resizing is rare, because we double in size
+        Basically it's O(1)
         """
         # Your code here
         if self.get_load_factor() > 0.7:
